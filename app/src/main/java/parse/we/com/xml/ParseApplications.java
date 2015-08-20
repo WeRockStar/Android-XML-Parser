@@ -1,8 +1,8 @@
 package parse.we.com.xml;
 
+import android.util.Log;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
-
 import java.io.StringReader;
 import java.util.ArrayList;
 
@@ -26,6 +26,7 @@ public class ParseApplications {
         boolean operationStatus = true;
 
         Application currentRecord = null;
+        //check exist tag
         boolean isEntry = false;
         String textValue = "";
 
@@ -44,16 +45,41 @@ public class ParseApplications {
                 } else if (eventType == XmlPullParser.END_DOCUMENT) {
 
                 } else if (eventType == XmlPullParser.START_TAG) {
+                    if (tagName.equalsIgnoreCase("entry")) {
+                        isEntry = true;
+                        currentRecord = new Application();
+                    }
+                } else if (eventType == XmlPullParser.TEXT) {
+                    textValue = xmlPullParser.getText();
 
                 } else if (eventType == XmlPullParser.END_TAG) {
-
+                    //in entry tag
+                    if (isEntry) {
+                        if (tagName.equalsIgnoreCase("entry")) {
+                            applicationArrayList.add(currentRecord);
+                            isEntry = false;
+                        }
+                        if (tagName.equalsIgnoreCase("name")) {
+                            currentRecord.setName(textValue);
+                        } else if (tagName.equalsIgnoreCase("artist")) {
+                            currentRecord.setArtist(textValue);
+                        } else if (tagName.equalsIgnoreCase("releaseDate")) {
+                            currentRecord.setReleaseDate(textValue);
+                        }
+                    }
                 }
+                //move next tag
                 eventType = xmlPullParser.next();
             }
 
         } catch (Exception e) {
             e.printStackTrace();
             operationStatus = false;
+        }
+        for (Application app : applicationArrayList) {
+            Log.d("DEBUG Name", app.getName());
+            Log.d("DEBUG Artist", app.getArtist());
+            Log.d("DEBUG ReleaseDate", app.getReleaseDate());
         }
 
         return operationStatus;
