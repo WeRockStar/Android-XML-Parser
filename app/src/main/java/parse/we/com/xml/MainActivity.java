@@ -3,15 +3,27 @@ package parse.we.com.xml;
 import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 public class MainActivity extends Activity {
+    TextView textview;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        textview = (TextView) findViewById(R.id.textview);
+        new DownloadData().execute("http://ax.itunes.apple.com/WebObjects/MZStoreServices.woa/ws/RSS/topfreeapplications/limit=10/xml");
     }
 
     @Override
@@ -37,6 +49,9 @@ public class MainActivity extends Activity {
     }
 
     private class DownloadData extends AsyncTask<String, Void, String> {
+
+        String data;
+
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -44,12 +59,60 @@ public class MainActivity extends Activity {
 
         @Override
         protected String doInBackground(String... urls) {
+            try {
+                data = downloadXML(urls[0]);
+            } catch (IOException e) {
+                return "Unable to download XML files.";
+            }
             return null;
+        }
+
+        private String downloadXML(String theUrl) throws IOException {
+            int BUFFER_SIZE = 2000;
+            InputStream is = null;
+
+            String xmlContent = "";
+
+            try {
+                URL url = new URL(theUrl);
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setReadTimeout(10000);
+                connection.setConnectTimeout(15000);
+                connection.setRequestMethod("GET"); //GET METHOD
+                connection.setDoInput(true);
+                //check status code
+                int respone = connection.getResponseCode();
+                Log.d("STATUS CODE", "The responed is : " + respone);
+                is = connection.getInputStream();
+
+                InputStreamReader isr = new InputStreamReader(is);
+                int charRead;
+                char[] inputBuffer = new char[BUFFER_SIZE];
+                try {
+                    while ((charRead = isr.read(inputBuffer)) > 0) {
+                        String readString = String.copyValueOf(inputBuffer, 0, charRead);
+                        xmlContent += readString;
+                        inputBuffer = new char[BUFFER_SIZE];
+                    }
+                    //result xml
+                    return xmlContent;
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    return null;
+                }
+            } finally {
+                if (is != null) {
+                    is.close();
+                }
+            }
         }
 
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
+            Log.d("onPost", data);
+            textview.setText(data);
+
         }
 
         @Override
