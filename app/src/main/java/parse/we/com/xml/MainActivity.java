@@ -21,7 +21,6 @@ import java.net.URL;
 public class MainActivity extends Activity {
     private Button btnParse;
     private ListView listContents;
-    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +28,6 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
         listContents = (ListView) findViewById(R.id.listContents);
         btnParse = (Button) findViewById(R.id.btnParse);
-        progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
         btnParse.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -68,7 +66,6 @@ public class MainActivity extends Activity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-
         }
 
         @Override
@@ -130,7 +127,6 @@ public class MainActivity extends Activity {
         @Override
         protected void onProgressUpdate(Void... values) {
             super.onProgressUpdate(values);
-            progressBar.setVisibility(View.INVISIBLE);
         }
     }
 }
