@@ -34,9 +34,9 @@ public class Application {
     }
 
     public String toString() {
-        return "Name : " + this.name
-                + "\nArtist : " + this.artist
-                + "\nRelease Date : " + this.releaseDate
+        return "NAME : " + this.name
+                + "\nARTIST : " + this.artist
+                + "\nRELEASE DATE : " + this.releaseDate
                 + "\n";
     }
 }

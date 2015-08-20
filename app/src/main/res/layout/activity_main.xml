@@ -13,7 +13,7 @@
         android:background="#25d64f"
         android:layout_margin="3dp"
         android:textColor="#fff"
-        android:textStyle="bold"
+        fontPath="fonts/Roboto-Bold.ttf"
         android:text="Parse XML" />
 
     <ListView
