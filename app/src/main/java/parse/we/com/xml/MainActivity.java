@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import java.io.IOException;
@@ -15,14 +17,16 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class MainActivity extends Activity {
-    TextView textview;
+    private Button btnParse;
+    private ListView listContents;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        listContents = (ListView) findViewById(R.id.listContents);
+        btnParse = (Button) findViewById(R.id.btnParse);
 
-        textview = (TextView) findViewById(R.id.textview);
         new DownloadData().execute("http://ax.itunes.apple.com/WebObjects/MZStoreServices.woa/ws/RSS/topfreeapplications/limit=10/xml");
     }
 
@@ -110,8 +114,7 @@ public class MainActivity extends Activity {
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-            Log.d("onPost", data);
-            textview.setText(data);
+            //Log.d("onPost", data);
 
         }
 
