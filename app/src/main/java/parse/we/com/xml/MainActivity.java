@@ -6,8 +6,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.io.IOException;
@@ -19,6 +21,7 @@ import java.net.URL;
 public class MainActivity extends Activity {
     private Button btnParse;
     private ListView listContents;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,8 +29,14 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
         listContents = (ListView) findViewById(R.id.listContents);
         btnParse = (Button) findViewById(R.id.btnParse);
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
-        new DownloadData().execute("http://ax.itunes.apple.com/WebObjects/MZStoreServices.woa/ws/RSS/topfreeapplications/limit=10/xml");
+        btnParse.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new DownloadData().execute("http://ax.itunes.apple.com/WebObjects/MZStoreServices.woa/ws/RSS/topfreeapplications/limit=10/xml");
+            }
+        });
     }
 
     @Override
@@ -59,6 +68,7 @@ public class MainActivity extends Activity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+
         }
 
         @Override
@@ -115,12 +125,12 @@ public class MainActivity extends Activity {
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
             //Log.d("onPost", data);
-
         }
 
         @Override
         protected void onProgressUpdate(Void... values) {
             super.onProgressUpdate(values);
+            progressBar.setVisibility(View.INVISIBLE);
         }
     }
 }

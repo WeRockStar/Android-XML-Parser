@@ -17,8 +17,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_below="@+id/btnParse">
+        android:layout_below="@+id/btnParse"
+        android:visibility="invisible"></ListView>
 
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_centerHorizontal="true"
+        android:visibility="invisible"
 
-    </ListView>
+        />
+
 </RelativeLayout>
