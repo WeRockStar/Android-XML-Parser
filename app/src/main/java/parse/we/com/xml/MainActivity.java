@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -17,10 +18,12 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 
 public class MainActivity extends Activity {
     private Button btnParse;
     private ListView listContents;
+    String xmlData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,9 +35,21 @@ public class MainActivity extends Activity {
         btnParse.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new DownloadData().execute("http://ax.itunes.apple.com/WebObjects/MZStoreServices.woa/ws/RSS/topfreeapplications/limit=10/xml");
+                ParseApplications parse = new ParseApplications(xmlData);
+                boolean operationStatus = parse.process();
+                if (operationStatus) {
+                    ArrayList<Application> applicationsList = parse.getApplicationArrayList();
+
+                    ArrayAdapter<Application> adapter = new ArrayAdapter<Application>(MainActivity.this, R.layout.list_item, applicationsList);
+                    listContents.setVisibility(listContents.VISIBLE);
+                    listContents.setAdapter(adapter);
+                } else {
+                    Log.d("MainActivity", "Error parsing files");
+                }
             }
         });
+
+        new DownloadData().execute("http://ax.itunes.apple.com/WebObjects/MZStoreServices.woa/ws/RSS/topfreeapplications/limit=10/xml");
     }
 
     @Override
@@ -122,6 +137,7 @@ public class MainActivity extends Activity {
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
             //Log.d("onPost", data);
+            xmlData = data;
         }
 
         @Override
